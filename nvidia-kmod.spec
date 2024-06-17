@@ -13,7 +13,7 @@ Epoch:         3
 Version:       580.142
 # Taken over by kmodtool
 Release:       2%{?dist}
-Summary:       NVIDIA display driver kernel module
+Summary:       rpm-ostree compose compatible NVIDIA display driver kernel module
 License:       Redistributable, no modification permitted
 URL:           https://www.nvidia.com/
 
@@ -21,18 +21,24 @@ Source11:      nvidia-kmodtool-excludekernel-filterfile
 Patch0:        make_modeset_default.patch
 Patch1:        fix-hardware-cursor-crash.patch
 
+Source0:       %{name}-%{version}-%{_target_cpu}.tar.xz
 Source100:     nvidia-kmod-noopen-checks
 Source101:     nvidia-kmod-noopen-pciids.txt
 
+Requires:      xorg-x11-drv-nvidia-kmodsrc = %{version}
+Requires(post): xorg-x11-drv-nvidia-kmodsrc = %{version}
+
 ExclusiveArch:  x86_64 aarch64
 
+# --------------- Not relevant since it just defines build requirements that produce errors during rpm-ostree compose.
 # get the needed BuildRequires (in parts depending on what we build for)
-%global AkmodsBuildRequires %{_bindir}/kmodtool, xorg-x11-drv-nvidia-kmodsrc = %{epoch}:%{version}
-BuildRequires:  %{AkmodsBuildRequires}
-
-%{!?kernels:BuildRequires: gcc, elfutils-libelf-devel, buildsys-build-rpmfusion-kerneldevpkgs-%{?buildforkernels:%{buildforkernels}}%{!?buildforkernels:current}-%{_target_cpu} }
+# %global AkmodsBuildRequires %{_bindir}/kmodtool, xorg-x11-drv-nvidia-kmodsrc = %{epoch}:%{version}
+# BuildRequires:  %{AkmodsBuildRequires}
+# 
+# %{!?kernels:BuildRequires: gcc, elfutils-libelf-devel, buildsys-build-rpmfusion-kerneldevpkgs-%{?buildforkernels:%{buildforkernels}}%{!?buildforkernels:current}-%{_target_cpu} }
 # kmodtool does its magic here
-%{expand:%(kmodtool --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfile %{SOURCE11} --obsolete-name nvidia-newest --obsolete-version "%{?epoch}:%{version}-%{release}" %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null) }
+# ---------------
+%{expand:%(kmodtool --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfile %{SOURCE11} --obsolete-name nvidia-newest --obsolete-version "%{?epoch}:%{version}-%{release}" %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null | grep --invert-match "BuildRequires:") }
 
 %description
 The nvidia %{version} display driver kernel module for kernel %{kversion}.
@@ -43,7 +49,9 @@ The nvidia %{version} display driver kernel module for kernel %{kversion}.
 # print kmodtool output for debugging purposes:
 kmodtool  --target %{_target_cpu}  --repo rpmfusion --kmodname %{name} --filterfile %{SOURCE11} --obsolete-name nvidia-newest --obsolete-version "%{?epoch}:%{version}-%{release}" %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null
 %setup -T -c
-tar --use-compress-program xz -xf %{_datadir}/%{name}-%{version}/%{name}-%{version}-%{_target_cpu}.tar.xz
+# Adapt to the 
+cp %{_sourcedir}/%{name}-%{version}-%{_target_cpu}.tar.xz .
+tar --use-compress-program xz -xf %{name}-%{version}-%{_target_cpu}.tar.xz
 # Switch to kernel or kernel-open
 %if 0%{?_with_kmod_nvidia_open:1}
 mv kernel kernel-closed

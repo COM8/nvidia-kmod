@@ -30,7 +30,7 @@ To solve this I did the following changes to the package:
 
 ```bash
 # Install all build dependencies
-sudo dnf install rpm-build rpmdevtools
+sudo dnf install rpm-build rpmdevtools kmodtool
 
 # Clone the repository
 git clone https://github.com/COM8/nvidia-kmod.git
@@ -44,3 +44,5 @@ ls -l ~/rpmbuild/RPMS/x86_64/
 
 # You can host the RPMs inside your own RPM repository. Ref: https://earthly.dev/blog/creating-and-hosting-your-own-rpm-packages-and-yum-repo/
 ```
+
+⚠️ Don't forget to add the correct kernel arguments on your system to disable the nouveau driver: https://rpmfusion.org/Howto/NVIDIA

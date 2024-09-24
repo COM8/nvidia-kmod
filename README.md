@@ -30,7 +30,7 @@ To solve this I did the following changes to the package:
 
 ```bash
 # Install all build dependencies
-sudo dnf install rpm-build rpmdevtools
+sudo dnf install rpm-build rpmdevtools kmodtool
 
 # Clone the repository
 git clone https://github.com/COM8/nvidia-kmod.git

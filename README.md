@@ -46,3 +46,10 @@ ls -l ~/rpmbuild/RPMS/x86_64/
 ```
 
 ⚠️ Don't forget to add the correct kernel arguments on your system to disable the nouveau driver: https://rpmfusion.org/Howto/NVIDIA
+
+## Updating
+
+1. Rebase on the selected version from https://pkgs.org/search/?q=xorg-x11-drv-nvidia-kmodsrc
+2. Download the correct `xorg-x11-drv-nvidia-kmodsrc*.rpm` from https://pkgs.org/search/?q=xorg-x11-drv-nvidia-kmodsrc
+3. Extract the rpm via `rpm2cpio xorg-x11-drv-nvidia-kmodsrc-560.35.03-3.fc40.x86_64.rpm | cpio -idmv`
+4. Take the `/usr/share/nvidia-kmod-560.35.03-x86_64.tar.xz` archive and move it to this repo.

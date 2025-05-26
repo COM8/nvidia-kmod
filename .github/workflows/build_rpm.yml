@@ -1,0 +1,28 @@
+name: Build RPM
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: fedora:41
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.2.2
+    - name: Install Dependencies
+      run: dnf install -y rpmdevtools kmodtool
+    - name: Setup Build Environment
+      run: |
+        rm -rf ~/rpmbuild/
+        rpmdev-setuptree
+        cp -r *.spec ~/rpmbuild/SPECS/
+        cp -r * ~/rpmbuild/SOURCES/
+    - name: Build RPM
+      run: |
+        rpmbuild -bb ~/rpmbuild/SPECS/nvidia-kmod.spec
+    - name: Upload RPM Artifacts
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: RPM
+        path: ~/rpmbuild/RPMS/x86_64/*.rpm

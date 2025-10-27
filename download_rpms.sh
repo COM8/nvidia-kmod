@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NVIDIA_DRIVER_VERSION="580.119.02" # Taken from nvidia-kmod.spec
+NVIDIA_DRIVER_VERSION="580.142" # Taken from nvidia-kmod.spec
 NVIDIA_DRIVER_EPOCH="1" # Taken from nvidia-kmod.spec
 FEDORA_VERSION="42"
 

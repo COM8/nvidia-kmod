@@ -8,6 +8,10 @@
 %endif
 %global debug_package %{nil}
 
+# Disable module compression since it produces more errors on an rpm-ostree booted system with secure boot.
+# Although the signing fix has been fixed. More in commit c72a05860b025bf85ef3c64b22c02c92a5e87c39.
+%global _kmodtool_zipmodules 0
+
 Name:          nvidia-kmod
 Epoch:         3
 Version:       580.142
